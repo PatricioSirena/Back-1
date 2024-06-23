@@ -1,0 +1,10 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.titulo{
+    padding: 20px 0;
+    background-color: red;
+    text-align: center;
+}
