@@ -18,6 +18,11 @@ let productos = [
         id: 2,
         nombre: "Producto 2",
         precio: 150
+    },
+    {
+        id: 3,
+        nombre: "Producto 3",
+        precio: 250
     }
 ]
 
