@@ -11,13 +11,21 @@ const newProduct = async (body) => {
 }
 
 const getOneProduct = async (id) => {
+    try {
         const product = await ProductModel.findById({_id: id})
         return product
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 const getAllProducts = async () => {
+    try {
         const products = await ProductModel.find()
         return products    
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 const updateProduct = async (id, body) => {
