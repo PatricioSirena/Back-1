@@ -1,5 +1,7 @@
 const UserModel = require('../models/user')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
 
 const newUser = async (body) => {
     try {
@@ -81,13 +83,20 @@ const login = async (body) =>{
     try {
         const userExist = await UserModel.findOne({email: body.email})
         if (!userExist) {
-            return 404
+            return {code: 400}
         } else{
             const validatedUser = bcrypt.compareSync(body.password, userExist.password)
             if (validatedUser) {
-                return 200
+                const payload = {
+                    id: userExist._id,
+                    rol: userExist.rol,
+                    active: userExist.active
+                }
+
+                const token = jwt.sign(payload, process.env.JWT_KEY)
+                return {code: 200, token}
         } else {
-            return 401
+            return {code: 401}
         }
     }
     } catch (error) {

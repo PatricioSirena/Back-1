@@ -26,6 +26,14 @@ const createProducts = async (req, res) =>{
     }
 }
 
+const addImage = async (req, res) =>{
+    try {
+        
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
 const updateProducts = async (req, res) =>{
     try {
         const id = req.params.idProduct
@@ -54,5 +62,6 @@ module.exports = {
     getProductByIdOrProducts,
     createProducts,
     updateProducts,
-    deleteProducts
+    deleteProducts,
+    addImage
 }

@@ -1,0 +1,27 @@
+const jwt = require('jsonwebtoken')
+
+module.exports = (rol) => (req, res, next) => {
+    const token = req.header('auth')
+    if (!token) {
+        return res.status(409).json({ msg: 'No recibimos el token para autorizarlo' })
+    }
+    try {
+            // Preguntar a Andres como validar cuando al hacer el verify nos indica que el token es invalido?
+            
+            const verify = jwt.verify(token, process.env.JWT_KEY)
+
+            if(rol === verify.rol) {
+                return next()
+            } else {
+                return res.status(401).json({ msg: 'No tenes acceso' })
+            }
+
+    } catch (error) {
+        if(error.name === 'JsonWebTokenError'){
+            return res.status(401).json({ msg: 'Token invalido' })
+        }else{
+            console.log(error);
+            return res.status(500).json({ msg: 'Error interno' })
+        }
+    }
+}

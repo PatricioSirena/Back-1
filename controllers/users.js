@@ -76,12 +76,12 @@ const deleteUser = async (req, res) => {
 const userLogin = async (req, res) => {
     try {
         const result = await userServices.login(req.body)
-        if (result === 404) {
-            res.status(404).json({ msg: 'Usuario no encontrado' })
-        } else if (result === 401) {
+        if (result.code === 400) {
+            res.status(400).json({ msg: 'Usuario no encontrado' })
+        } else if (result.code === 401) {
             res.status(401).json({ msg: 'Contraseña incorrecta' })
         } else {
-            res.status(200).json({ msg: 'Logueado con exito' })
+            res.status(200).json({ msg: 'Logueado con exito', token: result.token})
         }
     } catch (error) {
         res.status(500).json(error)
