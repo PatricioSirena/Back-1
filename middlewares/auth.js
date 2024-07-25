@@ -5,9 +5,7 @@ module.exports = (rol) => (req, res, next) => {
     if (!token) {
         return res.status(409).json({ msg: 'No recibimos el token para autorizarlo' })
     }
-    try {
-            // Preguntar a Andres como validar cuando al hacer el verify nos indica que el token es invalido?
-            
+    try {         
             const verify = jwt.verify(token, process.env.JWT_KEY)
 
             if(rol === verify.rol) {

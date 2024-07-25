@@ -1,9 +1,9 @@
 const ProductModel = require('../models/products')
 
 
-const newProduct = async (body) => {
+const newProduct = (body) => {
     try {
-        const newItem = await new ProductModel(body)
+        const newItem = new ProductModel(body)
         return newItem
     } catch (error) {
         console.log(error);
@@ -19,10 +19,18 @@ const getOneProduct = async (id) => {
     }
 }
 
-const getAllProducts = async () => {
+const getAllProducts = async (limit , to) => {
     try {
-        const products = await ProductModel.find()
-        return products    
+        const [products, totalQuantity] = await Promise.all([
+            ProductModel.find({active:true}).skip(to * limit).limit(limit),
+            ProductModel.countDocuments({active:true})
+            ]) 
+        const pagination = {
+            products,
+            totalQuantity
+        }
+
+        return pagination
     } catch (error) {
         console.log(error)
     }
@@ -39,7 +47,7 @@ const updateProduct = async (id, body) => {
 
 const deleteProduct = async (id) => {
     try {
-        const response = await ProductModel.findByIdAndDelete(id)
+        const response = await ProductModel.findByIdAndDelete({_id: id})
         if(response){
             return 200
         }else {

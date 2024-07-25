@@ -4,11 +4,14 @@ const productServices = require('../services/products')
 const getProductByIdOrProducts = async (req, res) =>{
         try {
             const id = req.query.id
+            const limit = req.query.limit || 10
+            const to = req.query.to || 0
+
             if(id){
                 const producto = await productServices.getOneProduct(id)
                 res.status(200).json(producto)
             } else{
-                const productos = await productServices.getAllProducts()
+                const productos = await productServices.getAllProducts(limit, to)
                 res.status(200).json(productos)
             }
         } catch (error) {

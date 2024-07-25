@@ -1,6 +1,7 @@
 const UserModel = require('../models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const userRegistrerMessage = require('../helpers/nodemailer.registrer')
 
 
 const newUser = async (body) => {
@@ -13,6 +14,7 @@ const newUser = async (body) => {
         } else if (emailExist) {
             return 406
         } else {
+            userRegistrerMessage(body.userName, body.email)
             let salt = bcrypt.genSaltSync()
             body.password = bcrypt.hashSync(body.password, salt)
             const userCreated = new UserModel(body)
