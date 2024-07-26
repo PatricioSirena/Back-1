@@ -2,6 +2,8 @@ const UserModel = require('../models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const userRegistrerMessage = require('../helpers/nodemailer.registrer')
+const CartModel = require('../models/cart')
+const FavoriteModel = require('../models/favorite')
 
 
 const newUser = async (body) => {
@@ -13,14 +15,25 @@ const newUser = async (body) => {
             return 401
         } else if (emailExist) {
             return 406
-        } else {
+        } 
+        if(body.rol !== undefined){
+            return 409
+        }
             userRegistrerMessage(body.userName, body.email)
             let salt = bcrypt.genSaltSync()
             body.password = bcrypt.hashSync(body.password, salt)
             const userCreated = new UserModel(body)
+            const userCart = new CartModel({userId: userCreated._id})
+            const userFav = new FavoriteModel({userId: userCreated._id})
+
+            userCreated.cartId = userCart._id
+            userCreated.favoriteId = userFav._id
+
+            await userCart.save()
+            await userFav.save()
             await userCreated.save()
             return 201
-        }
+        
     } catch (error) {
         console.log(error)
     }

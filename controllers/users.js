@@ -8,6 +8,8 @@ const createUser = async (req, res) => {
             res.status(401).json({ msg: 'El nombre de usuario ya esta registrado' })
         } else if (newUser === 406) {
             res.status(406).json({ msg: 'El correo ya esta registrado' })
+        } else if(newUser === 409){
+            res.status(409).json({ msg: 'Rol incorrecto, rol por defecto es usuario' })
         } else {
             res.status(201).json({ msg: 'Ususario registrado con exito' })
         }

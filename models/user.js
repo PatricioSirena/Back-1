@@ -26,6 +26,12 @@ const UserSchema = new Schema({
         type: String,
         default: 'user',
         enum:['user', 'admin']
+    },
+    cartId:{
+        type: String
+    },
+    favoriteId: {
+        type: String
     }
 })
 
