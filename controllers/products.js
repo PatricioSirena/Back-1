@@ -1,5 +1,81 @@
 const productServices = require('../services/products')
 
+const createProducts = async (req, res) =>{
+    try {
+        const newProduct = await productServices.newProduct(req.body)
+        await newProduct.save()
+        res.status(201).json(newProduct)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+const addImage = async (req, res) =>{
+    try {
+        const cloudImage = await productServices.addImageToProduct(req.params.idProduct, req.file)
+        if(cloudImage === 200){
+            res.status(200).json({message: 'Imagen cargada correctamente'})
+        }
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+const addToCart = async (req, res) =>{
+    try {
+        const result = await productServices.addProductToCart(req.userId, req.params.idProduct)
+
+        if(result.statusCode === 200){
+            res.status(200).json({message: result.msg})
+        } else{
+            res.status(400).json({message: result.msg})
+        }
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+const deleteFromCart = async(req, res) =>{
+    try {
+        const result = await productServices.deleteProductFromCart(req.userId, req.params.idProduct)
+
+        if(result.statusCode === 200){
+            res.status(200).json({message: result.msg})
+        } else{
+            res.status(400).json({message: result.msg})
+        }
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+const addToFav = async (req, res) =>{
+    try {
+        const result = await productServices.addProductToFav(req.userId, req.params.idProduct)
+
+        if(result.statusCode === 200){
+            res.status(200).json({message: result.msg})
+        } else {
+            res.status(400).json({message: result.msg})
+        }
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+const deleteFromFav = async (req, res) =>{
+    try {
+        const result = await productServices.deleteProductFromFav(req.userId, req.params.idProduct)
+
+        if(result.statusCode === 200){
+            res.status(200).json({message: result.msg})
+        } else {
+            res.status(400).json({message: result.msg})
+        }
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
 
 const getProductByIdOrProducts = async (req, res) =>{
         try {
@@ -19,19 +95,10 @@ const getProductByIdOrProducts = async (req, res) =>{
         }
 }
 
-const createProducts = async (req, res) =>{
+const searchProductByTerm = async (req, res) =>{
     try {
-        const newProduct = await productServices.newProduct(req.body)
-        await newProduct.save()
-        res.status(201).json(newProduct)
-    } catch (error) {
-        res.status(500).json(error)
-    }
-}
-
-const addImage = async (req, res) =>{
-    try {
-        
+        const result = await productServices.searchProduct(req.query.term)
+        res.status(200).json(result)
     } catch (error) {
         res.status(500).json(error)
     }
@@ -66,5 +133,10 @@ module.exports = {
     createProducts,
     updateProducts,
     deleteProducts,
-    addImage
+    addImage,
+    searchProductByTerm,
+    addToCart,
+    deleteFromCart,
+    addToFav,
+    deleteFromFav
 }

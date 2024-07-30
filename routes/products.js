@@ -1,12 +1,20 @@
 const express = require('express')
-const {createProducts, deleteProducts, getProductByIdOrProducts, updateProducts, addImage} = require('../controllers/products')
+const { createProducts, 
+        deleteProducts, 
+        getProductByIdOrProducts, 
+        updateProducts, 
+        addImage, 
+        searchProductByTerm, 
+        addToCart, 
+        deleteFromCart, 
+        addToFav, 
+        deleteFromFav} = require('../controllers/products')
 const {check} = require('express-validator')
 const {validateFields} = require('../middlewares/validateFields')
 const auth = require('../middlewares/auth')
+const multer = require('../middlewares/multer')
 const router = express.Router()
 
-
-router.get('/', getProductByIdOrProducts)
 
 router.post('/', [
     check('name', 'El nombre es requerido').not().isEmpty(),
@@ -18,7 +26,19 @@ router.post('/', [
     validateFields
 ], auth('admin'), createProducts)
 
-router.post('/addImage/:idProduct', auth('admin'), addImage)
+router.post('/addImage/:idProduct', multer.single('image'), addImage)
+
+router.post('/addToCart/:idProduct', auth('user'), addToCart)
+
+router.post('/deleteFromCart/:idProduct', auth('user'), deleteFromCart)
+
+router.post('/addToFav/:idProduct', auth('user'), addToFav)
+
+router.post('/deleteFromFav/:idProduct', auth('user'), deleteFromFav)
+
+router.get('/', getProductByIdOrProducts)
+
+router.get('/searchProduct', searchProductByTerm)
 
 router.put('/:idProduct', [
     check('idProduct', 'No es un ID valido').isMongoId(),
